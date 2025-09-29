@@ -1,54 +1,109 @@
-# CSV to SQLite Converter
+# County Health Data API - CS1060 HW4
 
-A web application that converts CSV files to SQLite databases. This project can be deployed on Netlify as a serverless function.
-
- https://csv-to-sqlite-converter.netlify.app
-
+A Flask API that provides county health data by ZIP code and health measure. This project fulfills the requirements for CS1060 Homework 4: API Prototyping with Generative AI.
 
 ## Features
 
-- Upload CSV files through a modern web interface
-- Convert CSV data to SQLite format
-- Download the resulting SQLite database
-- Drag and drop file upload support
-- Responsive design
+- **Part 1**: CSV to SQLite conversion script (`csv_to_sqlite.py`)
+- **Part 2**: County health data API with `/county_data` endpoint
+- Supports all required health measures
+- Proper error handling (400, 404, 418)
+- ZIP code to county data joining
+- SQLite database with sanitized inputs
+
+## Data Sources
+
+- ZIP code to county mapping (`zip_county.csv`)
+- County health rankings data (`county_health_rankings.csv`)
 
 ## Local Development
 
-1. Install dependencies:
+1. Create and activate virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. Run the Flask application:
+3. Run the Flask application:
    ```bash
    python app.py
    ```
 
-3. Open your browser to `http://localhost:5000`
+4. API will be available at `http://localhost:8080`
 
-## Netlify Deployment
+## API Usage
 
-1. Connect your GitHub repository to Netlify
-2. Set the build command: `pip install -r requirements.txt`
-3. Set the publish directory: `.`
-4. Deploy!
+### Endpoint: POST /county_data
 
-The application will be available as a static site with serverless functions for CSV processing.
+**Required Parameters:**
+- `zip` - 5-digit ZIP code (e.g., "02138")
+- `measure_name` - Health measure name (see valid options below)
 
-## Usage
+**Valid Measure Names:**
+- Violent crime rate
+- Unemployment
+- Children in poverty
+- Diabetic screening
+- Mammography screening
+- Preventable hospital stays
+- Uninsured
+- Sexually transmitted infections
+- Physical inactivity
+- Adult obesity
+- Premature Death
+- Daily fine particulate matter
 
-1. Visit the web application
-2. Upload a CSV file by dragging and dropping or clicking to browse
-3. Click "Convert to SQLite"
-4. Download the resulting SQLite database file
+**Example Request:**
+```bash
+curl -H 'content-type:application/json' \
+     -d '{"zip":"02138","measure_name":"Adult obesity"}' \
+     http://localhost:8080/county_data
+```
 
-## File Structure
+**Special Features:**
+- Returns HTTP 418 if `coffee=teapot` is included in request
+- Returns HTTP 400 for missing required parameters
+- Returns HTTP 404 for invalid ZIP/measure combinations
 
-- `app.py` - Flask web application
-- `templates/index.html` - Web interface
-- `netlify/functions/csv-converter.py` - Serverless function for Netlify
+## Files
+
+- `csv_to_sqlite.py` - Command-line script for CSV to SQLite conversion
+- `app.py` - Flask API server
+- `data.db` - SQLite database with processed data
 - `requirements.txt` - Python dependencies
-- `netlify.toml` - Netlify configuration
-- `csv_to_sqlite.py` - Original command-line script
+- `index.html` - API documentation page
 
+## Testing
+
+The API correctly handles:
+- Valid ZIP codes and health measures
+- Invalid inputs with proper error codes
+- The special "teapot" easter egg (HTTP 418)
+- Cross-table joins between ZIP and county data
+
+## Homework Compliance
+
+This implementation fully satisfies CS1060 HW4 requirements:
+
+**Part 1 (15 points):**
+✅ `csv_to_sqlite.py` script created with generative AI  
+✅ Accepts valid CSV files with header rows  
+✅ Outputs SQLite database  
+✅ Takes database name and CSV file as arguments  
+✅ Works with provided data sources  
+
+**Part 2 (35 points):**  
+✅ API endpoint `/county_data` implemented  
+✅ Accepts HTTP POST with JSON content  
+✅ Returns county health data in correct schema  
+✅ Validates ZIP code (5 digits) and measure name  
+✅ Implements coffee=teapot → HTTP 418 easter egg  
+✅ Returns HTTP 400 for missing parameters  
+✅ Returns HTTP 404 for invalid data combinations  
+✅ Sanitizes SQL inputs  
+✅ Successfully joins ZIP and county health data

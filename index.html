@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>County Health Data API - CS1060 HW4</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .endpoint {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+        .example {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin: 5px 0;
+            padding: 5px 10px;
+            background: #fff;
+            border-radius: 3px;
+            border-left: 3px solid #007bff;
+        }
+        code {
+            background: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>County Health Data API</h1>
+        <p><strong>CS1060 Homework 4</strong> - API Prototyping with Generative AI</p>
+        
+        <h2>API Endpoint</h2>
+        <div class="endpoint">
+            POST /county_data
+        </div>
+        
+        <h2>Required Parameters</h2>
+        <ul>
+            <li><code>zip</code> - 5-digit ZIP code (e.g., "02138")</li>
+            <li><code>measure_name</code> - Health measure name (see valid options below)</li>
+        </ul>
+        
+        <h2>Valid Measure Names</h2>
+        <ul>
+            <li>Violent crime rate</li>
+            <li>Unemployment</li>
+            <li>Children in poverty</li>
+            <li>Diabetic screening</li>
+            <li>Mammography screening</li>
+            <li>Preventable hospital stays</li>
+            <li>Uninsured</li>
+            <li>Sexually transmitted infections</li>
+            <li>Physical inactivity</li>
+            <li>Adult obesity</li>
+            <li>Premature Death</li>
+            <li>Daily fine particulate matter</li>
+        </ul>
+        
+        <h2>Example Request</h2>
+        <div class="example">
+            <strong>curl command:</strong><br>
+            <code>curl -H 'content-type:application/json' -d '{"zip":"02138","measure_name":"Adult obesity"}' https://csv-to-sqlite-converter.netlify.app/county_data</code>
+        </div>
+        
+        <h2>Special Features</h2>
+        <ul>
+            <li>Returns HTTP 418 if <code>coffee=teapot</code> is included in request</li>
+            <li>Returns HTTP 400 for missing required parameters</li>
+            <li>Returns HTTP 404 for invalid ZIP/measure combinations</li>
+        </ul>
+        
+        <h2>Response Format</h2>
+        <p>Returns JSON array with county health data matching the database schema.</p>
+    </div>
+</body>
+</html>

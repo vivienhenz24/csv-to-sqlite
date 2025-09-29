@@ -38,6 +38,8 @@ A Flask API that provides county health data by ZIP code and health measure. Thi
 
 ## API Usage
 
+### 🌐 **Live API**: https://csv-to-sqlite.onrender.com/
+
 ### Endpoint: POST /county_data
 
 **Required Parameters:**
@@ -58,17 +60,72 @@ A Flask API that provides county health data by ZIP code and health measure. Thi
 - Premature Death
 - Daily fine particulate matter
 
-**Example Request:**
+## 🧪 **Test Examples**
+
+### 1. **Valid Request (HTTP 200)**
 ```bash
 curl -H 'content-type:application/json' \
      -d '{"zip":"02138","measure_name":"Adult obesity"}' \
-     http://localhost:8080/county_data
+     https://csv-to-sqlite.onrender.com/county_data
+```
+**Expected Response**: Array of county health data for Middlesex County, MA
+```json
+[
+  {
+    "confidence_interval_lower_bound": "0.17",
+    "confidence_interval_upper_bound": "0.19",
+    "county": "Middlesex County",
+    "county_code": "17",
+    "data_release_year": "",
+    "denominator": "198100",
+    "fipscode": "25017",
+    "measure_id": "11",
+    "measure_name": "Adult obesity",
+    "numerator": "35658",
+    "raw_value": "0.18",
+    "state": "MA",
+    "state_code": "25",
+    "year_span": "2004"
+  }
+  // ... more records for different years
+]
 ```
 
-**Special Features:**
-- Returns HTTP 418 if `coffee=teapot` is included in request
-- Returns HTTP 400 for missing required parameters
-- Returns HTTP 404 for invalid ZIP/measure combinations
+### 2. **Teapot Easter Egg (HTTP 418)**
+```bash
+curl -H 'content-type:application/json' \
+     -d '{"zip":"02138","measure_name":"Adult obesity","coffee":"teapot"}' \
+     https://csv-to-sqlite.onrender.com/county_data
+```
+**Expected Response**: `{"error":"I'm a teapot"}` with HTTP 418 status
+
+### 3. **Missing Parameters (HTTP 400)**
+```bash
+curl -H 'content-type:application/json' \
+     -d '{"zip":"02138"}' \
+     https://csv-to-sqlite.onrender.com/county_data
+```
+**Expected Response**: `{"error":"Both 'zip' and 'measure_name' are required"}` with HTTP 400
+
+### 4. **Invalid ZIP Code (HTTP 404)**
+```bash
+curl -H 'content-type:application/json' \
+     -d '{"zip":"99999","measure_name":"Adult obesity"}' \
+     https://csv-to-sqlite.onrender.com/county_data
+```
+**Expected Response**: `{"error":"No data found for the specified ZIP code and measure"}` with HTTP 404
+
+### 5. **API Documentation (HTTP 200)**
+```bash
+curl https://csv-to-sqlite.onrender.com/
+```
+**Expected Response**: API documentation showing all available endpoints and measures
+
+## 🔧 **Other ZIP Codes to Test**
+- `"10001"` - New York County, NY (Manhattan)
+- `"90210"` - Los Angeles County, CA (Beverly Hills)  
+- `"60601"` - Cook County, IL (Chicago)
+- `"33101"` - Miami-Dade County, FL (Miami)
 
 ## Files
 
